@@ -17,9 +17,9 @@
 
 /* WARNING: ALL MEMBERS IN THIS API ARE SUBJECT TO MAJOR REVISION UNTIL BOOTSTRAPPED. */
 
-using static japes.toolchain.api.io.ILogger;
+using static japes.toolchain.io.ILogger;
 
-namespace japes.toolchain.api.io {
+namespace japes.toolchain.io {
 
     #region Interfaces
 
@@ -167,7 +167,7 @@ namespace japes.toolchain.api.io {
         /// </summary>
         /// <param name="fallback">The fallback logger to use.</param>
         public StackLogger(ILogger fallback) : base(fallback) {
-            this.m_frames = new Stack<ILogger>();
+            m_frames = new Stack<ILogger>();
         }
 
         #endregion Constructors
@@ -185,7 +185,7 @@ namespace japes.toolchain.api.io {
 
         /// <inheritdoc cref="IStackLogger.Push(ILogger)"/>
         public void Push(ILogger logger) {
-            this.m_frames.Push(logger);
+            m_frames.Push(logger);
         }
 
         /// <inheritdoc cref="IStackLogger.Pop()"/>

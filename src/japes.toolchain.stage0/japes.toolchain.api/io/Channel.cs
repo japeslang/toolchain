@@ -18,16 +18,16 @@
 /* WARNING: ALL MEMBERS IN THIS API ARE SUBJECT TO MAJOR REVISION UNTIL BOOTSTRAPPED. */
 
 using NetTextReader = System.IO.TextReader;
-using NetTextWriter = System.IO.TextWriter; 
+using NetTextWriter = System.IO.TextWriter;
 
-namespace japes.toolchain.api.io {
+namespace japes.toolchain.io {
 
     #region Interfaces
 
     /// <summary>
     /// An interface specifying a stream of objects.
     /// </summary>
-    public interface IChannel : IDisposable {
+    public interface IChannel : japes.io. {
 
         #region Properties
 
@@ -96,7 +96,7 @@ namespace japes.toolchain.api.io {
     /// A refinement of <c>ISource&lt;T&gt;</c> that represents a textual source.
     /// </summary>
     public interface ITextSource : ISource<char> {
-        
+
     }
 
     /// <summary>
@@ -186,9 +186,9 @@ namespace japes.toolchain.api.io {
         /// <summary>
         /// Dispose of this object.
         /// </summary>
-        public virtual void Dispose() 
+        public virtual void Dispose()
             => m_reader?.Dispose();
-        
+
 
         #endregion Constructors
 
@@ -201,7 +201,7 @@ namespace japes.toolchain.api.io {
                 throw new IOException("Stream exhausted.");
             }
             else {
-                return (char) ret;
+                return (char)ret;
             }
         }
 
@@ -216,7 +216,7 @@ namespace japes.toolchain.api.io {
         private NetTextWriter m_writer;
 
         #region Properties
-        
+
         /// <inheritdoc cref="ISink{T}.CanWrite"/>
         public bool CanWrite => throw new NotImplementedException();
 
@@ -263,7 +263,7 @@ namespace japes.toolchain.api.io {
         #region I/O
 
         /// <inheritdoc cref="ISink{T}.Write(T)"/>
-        public void Write(char value) 
+        public void Write(char value)
             => m_writer.Write(value);
 
 

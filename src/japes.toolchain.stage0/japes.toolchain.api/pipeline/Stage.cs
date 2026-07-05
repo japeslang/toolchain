@@ -17,14 +17,16 @@
 
 /* WARNING: ALL MEMBERS IN THIS API ARE SUBJECT TO MAJOR REVISION UNTIL BOOTSTRAPPED. */
 
-using japes.toolchain.api.io;
+using japes.io;
+using japes.toolchain.io;
+using japes.util;
 
 namespace japes.toolchain.api.pipeline {
 
     /// <summary>
     /// An interface representing a compiler pipeline.
     /// </summary>
-    public interface IPipeline {
+    public interface IPipeline : japes.io.IDevice<byte>, ISource<char>  {
 
         #region Classes
 

@@ -17,7 +17,7 @@
 
 /* WARNING: ALL MEMBERS IN THIS API ARE SUBJECT TO MAJOR REVISION UNTIL BOOTSTRAPPED. */
 
-using japes.toolchain.api.io;
+using japes.toolchain.io;
 
 namespace japes.toolchain.api.pipeline {
 
