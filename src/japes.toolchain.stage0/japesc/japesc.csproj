@@ -8,7 +8,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="parser\JapesLexerImpl.g4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\japes.toolchain.api\japes.toolchain.api.csproj" />
+  </ItemGroup>
+
+	<ItemGroup>
+    <Antlr4 Include="..\..\..\doc\japes\JapesLexer.g4" Link="parser\JapesLexer.g4" />
+    <Antlr4 Include="..\..\..\doc\japes\JapesParser.g4" Link="parser\JapesParser.g4" />
+    <Antlr4 Include="**/*.g4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+	<!-- <PackageReference Include="Antlr4BuildTasks" Version="12.14.0" PrivateAssets="all" /> -->
   </ItemGroup>
 
 </Project>

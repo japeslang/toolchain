@@ -16,3 +16,36 @@
 */
 
 parser grammar JapesParser;
+
+/* -- Translation unit -- */
+translation_unit: tu_element*;
+tu_element: namespace_declaration | namespace_definition | composite_definition;
+
+/* Forward Nonterminals */
+
+unqualified_identifier : ID | ID_AT;
+identifier: unqualified_identifier ('.' unqualified_identifier)*;
+type: identifier generics_list?;
+
+visibility: PRIVATE INTERNAL? | INTERNAL | PROTECTED INTERNAL? | PUBLIC;
+
+generics_list: GENERIC_BEGIN identifier (COMMA identifier)* RBRACKET;
+
+/* -- Namespace -- */
+
+namespace_declaration: NAMESPACE identifier SEMICOLON;
+namespace_definition: NAMESPACE identifier LBRACE namespace_element* RBRACE;
+namespace_element: namespace_definition | composite_definition;
+
+/* -- Composites -- */
+
+composite_definition: class_definition | enum_definition;
+
+class_definition: visibility? class_specifiers class_type generics_list class_inheritance? class_constraints LBRACE class_body RBRACE SEMICOLON?;
+class_specifiers: STATIC? PARTIAL?;
+class_type: CLASS | VIRTUAL? STRUCT | UNION | INTERFACE;
+class_inheritance: COLON identifier (COMMA identifier)*;
+class_constraints: WHERE identifier COLON identifier;
+class_body: /* empty */;
+
+enum_definition: visibility? ENUM identifier LBRACE RBRACE SEMICOLON?;

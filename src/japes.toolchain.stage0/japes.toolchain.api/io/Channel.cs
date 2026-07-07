@@ -27,13 +27,7 @@ namespace japes.toolchain.io {
     /// <summary>
     /// An interface specifying a stream of objects.
     /// </summary>
-    public interface IChannel : japes.io. {
-
-        #region Properties
-
-        #endregion Properties
-
-        internal void M_InternalContract();
+    public interface IChannel {
 
         #region Logging
 
@@ -53,8 +47,6 @@ namespace japes.toolchain.io {
     /// </summary>
     /// <typeparam name="T">The type of value to read.</typeparam>
     public interface ISource<T> : IChannel {
-
-        void IChannel.M_InternalContract() { }
 
         #region Properties
 
@@ -104,8 +96,6 @@ namespace japes.toolchain.io {
     /// </summary>
     /// <typeparam name="T">The type of value to write.</typeparam>
     public interface ISink<T> : IChannel {
-
-        void IChannel.M_InternalContract() { }
 
         #region Properties
 

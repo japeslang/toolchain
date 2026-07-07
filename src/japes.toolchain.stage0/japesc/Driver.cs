@@ -16,15 +16,13 @@
 */
 
 using japes.io;
-using japes.toolchain.api.pipeline;
-using japes.toolchain.io;
-using japes.util;
+using japes.toolchain.pipeline;
 
 namespace __japesc {
 
 
 
-    public sealed class Driver : ILogger {
+    public sealed class Driver {
 
         #region Classes
 
@@ -80,8 +78,14 @@ namespace __japesc {
  
         }
 
-        public static async void Main(string[] args)
-            => new Driver(args)
+        public static void Main(string[] args) {
+            Driver driver = new Driver(args);
+            Environment.Exit(driver.M_Run().Result);  
+        }
+        
+        private async ValueTask<int> M_Run() {
+            return 0;
+        }
          
         #endregion Entry
     }

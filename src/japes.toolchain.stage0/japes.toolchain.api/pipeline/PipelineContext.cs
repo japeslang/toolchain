@@ -19,7 +19,7 @@
 
 using japes.toolchain.io;
 
-namespace japes.toolchain.api.pipeline {
+namespace japes.toolchain.pipeline {
 
     /// <summary>
     /// An interface representing a pipeline's environment context.
