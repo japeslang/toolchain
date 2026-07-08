@@ -92,7 +92,7 @@ FAT_ARROW: '=>';
 ID : [A-Za-z_][0-9A-Za-z_]*;
 ID_AT : '@' [A-Za-z_][0-9A-Za-z_]*;
 
-DECIMAL_INTEGER: 0 | [+-]?[1-9][0-9]*;
+DECIMAL_INTEGER: '0' | [+-]?[1-9][0-9]*;
 DECIMAL_REAL: [0-9]*[.][0-9]+([Ee][+-]?[0-9]+)?;
 HEX_INTEGER: '0x' [0-9ABCDEFabcdef_]*[0-9ABCDEFabcdef];
 OCTAL_INTEGER: '0' [0-7_]*[0-7];

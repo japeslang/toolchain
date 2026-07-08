@@ -24,7 +24,7 @@ tu_element: namespace_declaration | namespace_definition | composite_definition;
 /* Forward Nonterminals */
 
 unqualified_identifier : ID | ID_AT;
-identifier: unqualified_identifier ('.' unqualified_identifier)*;
+identifier: unqualified_identifier (DOT unqualified_identifier)*;
 type: identifier generics_list?;
 
 visibility: PRIVATE INTERNAL? | INTERNAL | PROTECTED INTERNAL? | PUBLIC;

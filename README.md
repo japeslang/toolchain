@@ -11,6 +11,7 @@ The source code associated with this project are licensed under the [GNU General
 The following subprojects are sponsored in this repository:
 
 - `src/japes.toolchain.stage0` - Bootstrap compiler implementation
-- `src/japes.j4` - The J4 Macro Preprocessor implementation, stage 1 and beyond
+- `src/japes.jokes` - The J4 Macro Preprocessor implementation, stage 1 and beyond
 - `src/japes.jinx` - The Jinx build system implementation, stage 1 and beyond
+- `src/japes.jive` - The Jive Documentation Processor implementation, stage 1 and beyond
 - `src/japesc` - The Japes compiler implementation, stage 1 and beyond 

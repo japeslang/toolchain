@@ -15,9 +15,7 @@
  License along with Japes.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System;
 using System.Collections;
-using System.Security.Cryptography.X509Certificates;
 
 namespace japes.io {
 

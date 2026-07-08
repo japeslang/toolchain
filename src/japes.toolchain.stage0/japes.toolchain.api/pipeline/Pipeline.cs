@@ -18,6 +18,7 @@
 /* WARNING: ALL MEMBERS IN THIS API ARE SUBJECT TO MAJOR REVISION UNTIL BOOTSTRAPPED. */
 
 using japes.io;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace japes.toolchain.pipeline {
@@ -69,6 +70,33 @@ namespace japes.toolchain.pipeline {
             internal abstract object? M_Peek();
 
             #endregion I/O
+
+            #region Flow Control
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            [StackTraceHidden]
+            protected void CompilerBug(string? message = null,
+                Exception? innerException = null)
+                => throw new CompilerBugException(Runtime.Caller(1), message, innerException);
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            [StackTraceHidden]
+            protected void CompilerBug(Exception? innerException = null)
+                => throw new CompilerBugException(Runtime.Caller(1), null, innerException);
+
+            protected void Error(string? message, Exception? innerException = null)
+                =>  throw new CompilerErrorException(message, innerException);
+
+            protected void Error(Exception? innerException = null)
+                => throw new CompilerErrorException(innerException);
+
+            protected void Fatal(string? message, Exception? innerException = null)
+                => throw new CompilerFatalException(message, innerException);
+
+            protected void Fatal(Exception? innerException = null)
+                => throw new CompilerFatalException(innerException);
+
+            #endregion Flow control
         }
 
         public abstract class Stage<I, O> : Stage, japes.io.IEncoder<I, O> {
