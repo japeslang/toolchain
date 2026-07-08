@@ -12,6 +12,7 @@ BEFORE starting any task, check your current session context. If the global proj
 
 - This repository is the toolchain repository and contains build tools for compiling the Japes Programming Language.
 - `japesc` is the compiler frontend.
-- `j4` is the macro preprocessor.
+- `jokes` is the macro preprocessor.
 - `jinx` is the build manager.
+- `jive` is the documentation processor.
 - The path `src/japes.toolchain.stage0` points to a stage0 compiler that can be used to bootstrap the Japes Programming Language.
