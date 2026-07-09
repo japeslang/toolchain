@@ -55,16 +55,20 @@ namespace japes.toolchain.parser {
         protected void LexConsolidateMLComment(int tokenType, int channel,
             string description, string expected) {
 
-            if (LexLeaveMLComment()) {
-                this.Text = this.m_docComment.ToString();
-                this.Type = tokenType;
-                this.Channel = channel;
+            try {
+                if (LexLeaveMLComment()) {
+                    this.Text = this.m_docComment.ToString();
+                    this.Type = tokenType;
+                    this.Channel = channel;
+                }
+                else {
+                    LexAppendMLCommentText();
+                }
             }
-            else {
+            catch (CompilerFatalException exception) {
                 LexFatal("Cannot consolidate {0}, probably because a terminal \"{1}\" is missing.",
                     description, expected);
             }
-
         }
 
         #endregion Multiline Comments
@@ -112,30 +116,11 @@ namespace japes.toolchain.parser {
 
         #region String Maniplation
 
-        protected string LexStringLeft(string @string, int length) {
-            if (length >= 0) {
-                return @string.Substring(0, length);
-            }
-            else {
-                int strlen = @string.Length;
-                if (strlen <= length)
-                    return @string;
-                return @string.Substring(-length);
-            }
-        }
+        protected string LexStringLeft(string @string, int length)
+            => @string.Left(length);
 
-        protected string LexStringRight(string @string, int length) {
-            int strlen = @string.Length;
-            if (strlen <= length)
-                return @string;
-
-            if (length >= 0) {
-                return @string.Substring(strlen - length, length);
-            }
-            else {
-                return @string.Substring(0, strlen - length);
-            }
-        }
+        protected string LexStringRight(string @string, int length)
+            => @string.Right(length);
 
         #endregion String Manipulation
 
@@ -157,7 +142,7 @@ namespace japes.toolchain.parser {
             => this.Channel;
 
         protected void LexTokenSetChannel(int channel)
-            => this.Channel = Channel;
+            => this.Channel = channel;
 
         #endregion Token Manipulation
 

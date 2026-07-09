@@ -37,7 +37,7 @@
  * by the following interface (which is provided in object-oriented languages
  * by the japes.toolchain.api.parser.BasicJapesLexer class). 
  *
- * The grammar is also targeting SLL(2) unless ALL(*) becomes necessary. This is
+ * The grammar is also targeting LL(2) unless ALL(*) becomes necessary. This is
  * to make it easily implementable by other tools (including a nascent japesc 
  * compiler-compiler) that can read g4 files. ALL(*) is a highly-optimized
  * algorithm that will require substantial effort to implement, and SLL(2)
@@ -162,12 +162,12 @@ START_COMMENT_ML: '/*' {
 	LexEnterMLComment();
 };
 
-START_DOCCOMMENT_MACRO: '/**' {
+START_DOCCOMMENT_MACRO: '#doccomment' {
 	LexModePush(MODE_DOCCOMMENT_MACRO);
 	LexEnterMLComment();
 };
 
-START_COMMENT_MACRO: '/*' {
+START_COMMENT_MACRO: '#comment' {
 	LexModePush(MODE_COMMENT_MACRO);
 	LexEnterMLComment();
 };
@@ -217,9 +217,9 @@ ID : [A-Za-z_][0-9A-Za-z_]*;
 ID_AT : '@' [A-Za-z_][0-9A-Za-z_]*;
 
 DECIMAL_INTEGER: '0' | [+-]?[1-9][0-9]*;
-DECIMAL_REAL: [0-9]*[.][0-9]+([Ee][+-]?[0-9]+)?;
+DECIMAL_REAL: [0-9]*[.][0-9]+([Ee][+-]?[0-9]+)? | [1-9][0-9]*[Ee][+-]?[0-9]+;
 HEX_INTEGER: '0x' [0-9ABCDEFabcdef_]*[0-9ABCDEFabcdef];
-OCTAL_INTEGER: '0' [0-7_]*[0-7];
+OCTAL_INTEGER: 0' [0-7_]*[0-7];
 BINARY_INTEGER: '0b' [01_]*[01];
 
 /* == MODE 1: MODE_DOCCOMMENT_ML == */
@@ -276,7 +276,7 @@ END_DOCCOMMENT_MACRO: '#endcomment' {
 };
 
 /* == MODE 4: MODE_COMMENT_MACRO == */
-mode MODE_DOCCOMMENT_MACRO;
+mode MODE_COMMENT_MACRO;
 
 NESTED_START_COMMENT_MACRO: '#doccomment' | '#comment' {
 	LexEnterMLComment();
