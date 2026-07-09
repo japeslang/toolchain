@@ -22,8 +22,20 @@ namespace japes.toolchain.parser {
 
     public struct InlineTextAccumulator {
         private StringBuilder m_data;
-        private string? m_name;
+        private string m_name;
         private int m_depth;
+
+        #region Properties
+
+        public string? Name
+            => m_name;
+
+        public int Depth
+            => m_depth;
+
+        
+
+        #endregion Properties
 
         #region Constructors
 
