@@ -17,6 +17,7 @@
 
 using Antlr4.Runtime;
 using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Misc;
 using japes.io;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -60,6 +61,7 @@ namespace japes.toolchain.parser {
                     this.Text = this.m_docComment.ToString();
                     this.Type = tokenType;
                     this.Channel = channel;
+                    this.LexModePop();
                 }
                 else {
                     LexAppendMLCommentText();
@@ -90,8 +92,7 @@ namespace japes.toolchain.parser {
         [MethodImpl(MethodImplOptions.NoInlining)]
         [StackTraceHidden]
         protected void LexElaborate(string message, params object?[] args) {
-            throw new CompilerBugException(Runtime.Caller(),
-                String.Format(message, args));
+            
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -109,7 +110,7 @@ namespace japes.toolchain.parser {
         [MethodImpl(MethodImplOptions.NoInlining)]
         [StackTraceHidden]
         protected void LexFatal(string message, params object?[] args) {
-            throw new CompilerErrorException(String.Format(message, args));
+            throw new CompilerFatalException(String.Format(message, args));
         }
 
         #endregion Error Reporting
@@ -129,8 +130,12 @@ namespace japes.toolchain.parser {
         protected string LexText()
             => this.Text;
 
-        protected string LexTextSet(string value, params object?[] args)
-            => this.Text = String.Format(value, args);
+        protected string LexTextSet(string value, params object?[] args) {
+            if ((args?.Length ?? 0) > 0) {
+                value = String.Format(value, args!);
+            }
+            return this.Text = value;
+        }
 
         protected string LexTextLeft(int length)
             => LexStringLeft(this.Text, length);

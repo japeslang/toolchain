@@ -36,10 +36,11 @@ namespace japes.toolchain {
         protected Type EffectiveName
             => this.GetType();
 
-        public virtual Severity MessageSeverity
-            => Severity.ERROR;
+        public Severity MessageSeverity { get; }
 
         #endregion Properties
+
+        #region Constructors
 
         internal static string S_CompilerBug(string message, StackFramePosition pos)
             => $"{message} :: This is probably an oversight in the compiler implementation. Please file a bug report at https://github.com/japeslang/toolchain, and include the stack trace if available. The caller was {pos}.";
@@ -48,40 +49,46 @@ namespace japes.toolchain {
             string? fileName, int callerLine)
             => S_CompilerBug(message, new StackFramePosition(callerName, fileName, callerLine));
 
-
-        internal CompilerException(StackFramePosition pos,
-            string? message = null, Exception? innerException = null)
+        public CompilerException(StackFramePosition pos,
+            string? message = null, Exception? innerException = null,
+            Severity severity = Severity.ERROR)
             : base(message ?? S_CompilerBug($"Somebody was naughty and did not set this string.",
-                    pos), innerException) { }
+                    pos), innerException) {
+            this.MessageSeverity = severity;
+        }
 
-        internal CompilerException(string? message = null, Exception? innerException = null,
+        public CompilerException(string? message = null, Exception? innerException = null,
+            Severity severity = Severity.ERROR,
             [CallerMemberName] string? callerName = null,
             [CallerFilePath] string? file = null,
             [CallerLineNumber] int callerLine = 0)
             : this(new StackFramePosition(callerName,
                 file, callerLine), message, innerException) { }
 
-        internal CompilerException(Exception? innerException, 
+        public CompilerException(Exception? innerException, 
+            Severity severity = Severity.ERROR,
             [CallerMemberName] string? callerName = null,
             [CallerFilePath] string? file = null,
             [CallerLineNumber] int callerLine = 0) :
-            this(null, innerException, callerName, file, callerLine)  { }
+            this(null, innerException, severity, callerName, file, callerLine)  { }
+
+        #endregion Constructors1
     }
 
     public class CompilerBugException : CompilerException {
-
         #region Constructors
 
-        internal CompilerBugException(StackFramePosition pos, 
-            string? message = null, Exception? innerException = null)
+        internal CompilerBugException(StackFramePosition pos,
+            string? message = null, Exception? innerException = null,
+            Severity severity = Severity.ERROR)
             : base(S_CompilerBug(message ?? "An unspecified compiler bug occurred.",
-                pos)) { }
+                pos), innerException, severity) { }
 
         internal CompilerBugException(StackFrame? pos,
             string? message = null, Exception? innerException = null)
             : this(new StackFramePosition(pos), message, innerException) { }
 
-        internal CompilerBugException(string? message = null, 
+        internal CompilerBugException(string? message = null,
             Exception? innerException = null,
             [CallerMemberName] string? callerName = null,
             [CallerFilePath] string? file = null,

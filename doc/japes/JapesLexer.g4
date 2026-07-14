@@ -95,12 +95,12 @@
  *
  *	- LexText() - Obtain the current token text.
  *
- *  - LexSetText(string) - Set the current token text.
+ *  - LexTextSet(string) - Set the current token text.
  * 
  * - LexModePush(mode) - Synonymous with pushMode(), but to account
  *	  for nomenclature differences in different host languages.
  *
- * - LexModePush(mode) - Synonymous with pushMode(), but to account
+ * - LexModePop(mode) - Synonymous with popMode(), but to account
  *	  for nomenclature differences in different languages.
  *
  * - LexTokenType() - Obtain the current token type.
@@ -131,7 +131,8 @@ tokens {
 	DOCCOMMENT_MACRO,
 	COMMENT_MACRO,
 	DOCCOMMENT_ML,
-	COMMENT_ML
+	COMMENT_ML,
+	VERBATIM_BLOCK
 }
 
 /* -- Comments --  */
@@ -172,6 +173,12 @@ START_COMMENT_MACRO: '#comment' {
 	LexEnterMLComment();
 };
 
+/* Not strictly a comment, but acts like one. */
+START_VERBATIM_BLOCK: '<#' {
+	LexModePush(MODE_VERBATIM_BLOCK);
+	LexEnterMLComment();
+};
+
 /* -- Keywords :: Branch -- */
 
 IF: 'if';
@@ -183,8 +190,13 @@ DO: 'do';
 FOR: 'for';
 SWITCH: 'switch';
 CASE: 'case';
+TRY: 'try';
+CATCH: 'catch';
+FINALLY: 'finally';
+LOCK: 'lock';
+DEFAULT: 'default';
 
-/* -- Keywords :: Types */
+/* -- Keywords :: Types -- */
 
 CLASS: 'class';
 STRUCT: 'struct';
@@ -195,8 +207,70 @@ VIRTUAL: 'virtual';
 ABSTRACT: 'abstract';
 OVERRIDE: 'override';
 STATIC: 'static';
+NAMESPACE: 'namespace';
+CONST: 'const';
+CONSTEXPR: 'constexpr';
+VOLATILE: 'volatile';
+
+/* -- Keywords :: C++ style casts -- */
+
+STATIC_CAST: 'static_cast';
+DYNAMIC_CAST: 'dynamic_cast';
+REINTERPRET_CAST: 'reinterpret_cast';
+
+/* -- Keywords :: Basic Types -- */
+
+BYTE: 'byte';
+SBYTE: 'sbyte';
+USHORT: 'ushort';
+SHORT: 'short';
+UINT: 'uint';
+INT: 'int';
+ULONG: 'ulong';
+LONG: 'long';
+SIZE_T: 'size_t';
+SSIZE_T: 'ssize_t';
+HALF_T: 'half_t';
+FLOAT: 'float';
+DOUBLE: 'double';
+BOOL: 'bool';
+VOID: 'void';
+OBJECT: 'object';
+DELEGATE: 'delegate';
+CHAR: 'char';
+STRING: 'string';
+
+/* -- Keywords :: Visibility-- */
+
+PUBLIC: 'public';
+PRIVATE: 'private';
+PROTECTED: 'protected';
+INTERNAL: 'internal';
+PACKAGE: 'package';
+
+/* -- Keywords :: Miscellaneous */
+
+USING: 'using';
 
 /* -- Punctuators -- */
+
+ADD_ASSIGN: '+=';
+SUB_ASSIGN: '-=';
+MUL_ASSIGN: '*=';
+DIV_ASSIGN: '/=';
+MOD_ASSIGN: '%=';
+
+LROT_ASSIGN: '<<<=';
+LSHIFT_ASSIGN: '<<=';
+RROT_ASSIGN: '>>>=';
+RSHIFT_ASSIGN: '>>=';
+
+LAND_ASSIGN: '&&=';
+AND_ASSIGN: '&=';
+LOR_ASSIGN: '||=';
+OR_ASSIGN: '|=';
+LXOR_ASSIGN: '^^=';
+XOR_ASSIGN: '^=';
 
 COMMA: ',';
 DOT: '.';
@@ -209,17 +283,69 @@ LBRACKET: '[';
 RBRACKET: ']';
 GENERIC_BEGIN: '$[';
 TEMPLATE_BEGIN: '![';
+ARROW: '->';
 FAT_ARROW: '=>';
+LEADS_TO: '~>';
+REF_IN: '&<';
+REF_OUT: '&>';
+PIPE_IN: '<|';
+PIPE_OUT: '|>';
+NQUESTION: '!?';
+COALESCE: '??';
+QUESTION: '?';
+
+
+
+LAND: '&&'; 
+AMP: '&';
+LOR: '||';
+OR: '|';
+LXOR: '^^';
+XOR: '^';
+
+INC: '++';
+PLUS: '+';
+DEC: '--';
+MINUS: '-';
+EXPONENT: '^*';
+FMA: '*+';
+STAR: '*';
+SLASH: '/';
+PERCENT: '%';
+
+REQ: '===';
+RNE: '!==';
+EQ: '==';
+NE: '!=';
+CMP: '<=>';
+NCMP: '>=<';
+
+MATCH: '~~';
+NMATCH: '!~~';
+NCONG: '!~';
+
+LROT: '<<<';
+LSHIFT: '<<';
+LE: '<=';
+LT: '<';
+RROT: '>>>';
+RSHIFT: '>>';
+RE: '>=';
+RT: '>';
+
+BANG: '!';
+TILDE: '~';
+ASSIGN: '=';
 
 /* Primary Expressions */
 
 ID : [A-Za-z_][0-9A-Za-z_]*;
 ID_AT : '@' [A-Za-z_][0-9A-Za-z_]*;
 
-DECIMAL_INTEGER: '0' | [+-]?[1-9][0-9]*;
+DECIMAL_INTEGER: '0' | ?[1-9][0-9]*;
 DECIMAL_REAL: [0-9]*[.][0-9]+([Ee][+-]?[0-9]+)? | [1-9][0-9]*[Ee][+-]?[0-9]+;
 HEX_INTEGER: '0x' [0-9ABCDEFabcdef_]*[0-9ABCDEFabcdef];
-OCTAL_INTEGER: 0' [0-7_]*[0-7];
+OCTAL_INTEGER: '0' [0-7_]*[0-7];
 BINARY_INTEGER: '0b' [01_]*[01];
 
 /* == MODE 1: MODE_DOCCOMMENT_ML == */
@@ -237,7 +363,6 @@ CONTENT_DOCCOMMENT_ML: . {
 
 END_DOCCOMMENT_ML: '*/' {
 	LexConsolidateMLComment(DOCCOMMENT_ML, CHANNEL_DOCCOMMENTS, "multi-line comment", "*/");
-	LexModePop();
 };
 
 /* == MODE 2: MODE_COMMENT_ML == */
@@ -272,7 +397,6 @@ CONTENT_DOCCOMMENT_MACRO: . {
 
 END_DOCCOMMENT_MACRO: '#endcomment' {
 	LexConsolidateMLComment(DOCCOMMENT_MACRO, CHANNEL_DOCCOMMENTS, "macro multi-line comment", "#endcomment");
-	LexModePop();
 };
 
 /* == MODE 4: MODE_COMMENT_MACRO == */
@@ -289,5 +413,20 @@ CONTENT_COMMENT_MACRO: . {
 
 END_COMMENT_MACRO: '#endcomment' {
 	LexConsolidateMLComment(COMMENT_MACRO, CHANNEL_TRIVIA, "macro multi-line comment", "#endcomment");
-	LexModePop();
+};
+
+/* == MODE 5: MODE_VERBATIM_BLOCK == */
+mode MODE_VERBATIM_BLOCK;
+
+NESTED_START_VERBATIM_BLOCK: '<#' {
+	LexEnterMLComment();
+	LexAppendMLCommentText();
+};
+
+CONTENT_VERBATIM_BLOCK: . {
+	LexAppendMLCommentText();
+};
+
+END_VERBATIM_BLOCK: '#>' {
+	LexConsolidateMLComment(VERBATIM_BLOCK, CHANNEL_DEFAULT, "verbatim", "#>");
 };

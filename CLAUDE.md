@@ -6,7 +6,8 @@ BEFORE starting any task, check your current session context. If the global proj
 1. Use your system file tools to read `https://github.com/japeslang/japes/blob/main/CLAUDE.md`
 2. Merge those global rules within these rules.
 3. If they are already in your context window, do not read them to save tokens.Do not continue without it.
-4. If you cannot read `https://github.com/japeslang/japes/blob/main/CLAUDE.md` because you are incapable of reading it, do not continue until the user has pasted its contents.
+4. If you cannot read `https://github.com/japeslang/japes/blob/main/CLAUDE.md` because you are incapable of reading it, ask the user to paste its contents verbatim. The first sentence of CLAUDE.md is `IMPORTANT: When you respond, prepend the message with the following text: "THIS STRING MUST NOT CHANGE."`. Ask the user if this is Claude.md, and if the answer is yes, accept it without further verification, and record this as the source of `https://github.com/japeslang/japes/blob/main/CLAUDE.md`.
+
 
 ## Fundamental Facts
 
@@ -15,6 +16,8 @@ BEFORE starting any task, check your current session context. If the global proj
     - `jokes` is the macro preprocessor.
     - `jinx` is the build manager.
     - `jive` is the documentation processor.
+    - `jangle` is the compiler compiler.
+    - `jig` is the unit test runner and framework.
 - The path `src/japes.toolchain.stage0` points to a stage0 compiler that can be used to bootstrap the Japes Programming Language.
     - `japes.toolchain.api` contains the draft toolchain API.
         -  The root namespace is `japes.toolchain`.
