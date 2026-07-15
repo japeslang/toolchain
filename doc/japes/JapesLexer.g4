@@ -179,6 +179,18 @@ START_VERBATIM_BLOCK: '<#' {
 	LexEnterMLComment();
 };
 
+/* -- Directives -- */
+
+DIRECTIVE_PRAGMA := '#pragma' ~[\r\n]* {
+	LexTextSet(LexTextRight(-6));
+	LexTokenSetChannel(CHANNEL_TRIVIA);
+};
+
+DIRECTIVE_LINE := '#line' ~[\r\n]* {
+	LexTextSet(LexTextRight(-5));
+	LexTokenSetChannel(CHANNEL_TRIVIA);
+};
+
 /* -- Keywords :: Branch -- */
 
 IF: 'if';
@@ -239,6 +251,8 @@ OBJECT: 'object';
 DELEGATE: 'delegate';
 CHAR: 'char';
 STRING: 'string';
+TRUE: 'true';
+FALSE: 'false';
 
 /* -- Keywords :: Visibility-- */
 
@@ -294,8 +308,6 @@ NQUESTION: '!?';
 COALESCE: '??';
 QUESTION: '?';
 
-
-
 LAND: '&&'; 
 AMP: '&';
 LOR: '||';
@@ -342,11 +354,24 @@ ASSIGN: '=';
 ID : [A-Za-z_][0-9A-Za-z_]*;
 ID_AT : '@' [A-Za-z_][0-9A-Za-z_]*;
 
-DECIMAL_INTEGER: '0' | ?[1-9][0-9]*;
+DECIMAL_INTEGER: '0' | [1-9][0-9]*;
 DECIMAL_REAL: [0-9]*[.][0-9]+([Ee][+-]?[0-9]+)? | [1-9][0-9]*[Ee][+-]?[0-9]+;
 HEX_INTEGER: '0x' [0-9ABCDEFabcdef_]*[0-9ABCDEFabcdef];
 OCTAL_INTEGER: '0' [0-7_]*[0-7];
 BINARY_INTEGER: '0b' [01_]*[01];
+
+/* This is not strictly correct but it will do for now. We should consider
+ * when we want to enforce well-formedness for escape sequences, and when
+ * we want to intern these strings.
+ *
+ * todo: interpolated strings, 
+ */
+STRING_C_LIKE: '"' ([\\]["] | ~["])* '"';
+STRING_VERBATIM: '@"' ( '""' | [^"] | [\r\n])* '"';
+
+WHITESPACE: [ \t\r\n]+ {
+	LexTokenSetChannel(CHANNEL_TRIVIA);
+};
 
 /* == MODE 1: MODE_DOCCOMMENT_ML == */
 

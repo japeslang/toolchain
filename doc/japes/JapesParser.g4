@@ -34,9 +34,11 @@ type: identifier generics_list? pointer_declaration?;
 pointer_declaration: STAR* reference_declaration?;
 reference_declaration: AMP | REF_IN | REF_OUT;
 
-constant_expression: number;
+constant_expression: number | boolean | string_literal;
 number: integer | DECIMAL_REAL;
 integer: DECIMAL_INTEGER | HEX_INTEGER | BINARY_INTEGER | OCTAL_INTEGER;
+boolean: TRUE | FALSE;
+string_literal: STRING_C_LIKE | STRING_VERBATIM;
 
 visibility: PRIVATE INTERNAL? | INTERNAL | PROTECTED INTERNAL? | PUBLIC | PACKAGE;
 
@@ -45,7 +47,7 @@ generics_list: GENERIC_BEGIN identifier (COMMA identifier)* RBRACKET;
 /* -- Contextual Metakeywords -- */
 
 mkw_where: ID {LangTextIn(_localctx.Start, "where")}?;
-mkw_case: ID {LangTextIn(_localctx.Start, "case", "where", "default")}?;
+mkw_case: DEFAULT | ID {LangTextIn(_localctx.Start, "case", "where")}?;
 mkw_in: ID {LangTextIn(_localctx.Start, "in")}?;
 mkw_classSpec: ID {LangTextIn(_localctx.Start, "ref", "partial")}?;
 mkw_cast: ID {LangTextIn(_localctx.Start, "static_cast", "dynamic_cast", "reinterpret_cast")}?;
