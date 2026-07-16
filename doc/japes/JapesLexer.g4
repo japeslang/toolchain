@@ -198,6 +198,16 @@ DIRECTIVE_META: '#meta' ~[\r\n]* {
 	LexTokenSetChannel(CHANNEL_TRIVIA);
 };
 
+DIRECTIVE_REGION: '#region' ~[\r\n]* {
+	LexTextSet(LexTextRight(-7));
+	LexTokenSetChannel(CHANNEL_TRIVIA);
+};
+
+DIRECTIVE_ENDREGION: '#endregion' ~[\r\n]* {
+	LexTextSet(LexTextRight(-10));
+	LexTokenSetChannel(CHANNEL_TRIVIA);
+};
+
 /* -- Keywords :: Branch -- */
 
 IF: 'if';
@@ -225,11 +235,13 @@ UNION: 'union';
 VIRTUAL: 'virtual';
 ABSTRACT: 'abstract';
 OVERRIDE: 'override';
+SEALED: 'sealed';
 STATIC: 'static';
 NAMESPACE: 'namespace';
 CONST: 'const';
 CONSTEXPR: 'constexpr';
 VOLATILE: 'volatile';
+CTOR: '__ctor';
 
 /* -- Keywords :: C++ style casts -- */
 
@@ -260,6 +272,8 @@ CHAR: 'char';
 STRING: 'string';
 TRUE: 'true';
 FALSE: 'false';
+THIS: 'this';
+BASE: 'base';
 
 /* -- Keywords :: Visibility-- */
 
@@ -267,11 +281,12 @@ PUBLIC: 'public';
 PRIVATE: 'private';
 PROTECTED: 'protected';
 INTERNAL: 'internal';
-PACKAGE: 'package';
 
 /* -- Keywords :: Miscellaneous */
 
 USING: 'using';
+OPERATOR: 'operator';
+UNSAFE: 'unsafe';
 
 /* -- Punctuators -- */
 
@@ -349,12 +364,13 @@ LE: '<=';
 LT: '<';
 RROT: '>>>';
 RSHIFT: '>>';
-RE: '>=';
-RT: '>';
+GE: '>=';
+GT: '>';
 
 BANG: '!';
 TILDE: '~';
 ASSIGN: '=';
+COLON: ':';
 
 /* Primary Expressions */
 
