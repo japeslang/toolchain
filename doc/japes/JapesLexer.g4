@@ -193,7 +193,7 @@ DIRECTIVE_LINE: '#line' ~[\r\n]* {
 	LexTokenSetChannel(CHANNEL_TRIVIA);
 };
 
-DIRECTIVE_LINE: '#meta' ~[\r\n]* {
+DIRECTIVE_META: '#meta' ~[\r\n]* {
 	LexTextSet(LexTextRight(-5));
 	LexTokenSetChannel(CHANNEL_TRIVIA);
 };
@@ -478,7 +478,7 @@ END_VERBATIM_BLOCK: '#>' {
 mode MODE_STRING_FORMAT;
 
 ESCAPE_STRING_FORMAT: '{{' | '}}' | '""' 
-	| "\{" | "\}" | '\"'
+	| '\\{' | '\\}' | '\\"'
 	;
 
 NESTED_START_STRING_FORMAT: '{' {
@@ -489,7 +489,7 @@ NESTED_START_STRING_FORMAT: '{' {
 NESTED_END_STRING_FORMAT: '}' {
 	LexAppendMLCommentText();
 	LexLeaveMLComment();
-}
+};
 
 CONTENT_END_STRING_FORMAT: . {
 	LexAppendMLCommentText();
@@ -512,7 +512,7 @@ NESTED_START_STRING_FORMAT_VERBATIM: '{' {
 NESTED_END_STRING_FORMAT_VERBATIM: '}' {
 	LexAppendMLCommentText();
 	LexLeaveMLComment();
-}
+};
 
 CONTENT_END_STRING_FORMAT_VERBATIM: . {
 	LexAppendMLCommentText();
