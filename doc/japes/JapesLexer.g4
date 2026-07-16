@@ -132,7 +132,9 @@ tokens {
 	COMMENT_MACRO,
 	DOCCOMMENT_ML,
 	COMMENT_ML,
-	VERBATIM_BLOCK
+	VERBATIM_BLOCK,
+	STRING_FORMAT,
+	STRING_FORMAT_VERBATIM
 }
 
 /* -- Comments --  */
@@ -181,12 +183,17 @@ START_VERBATIM_BLOCK: '<#' {
 
 /* -- Directives -- */
 
-DIRECTIVE_PRAGMA := '#pragma' ~[\r\n]* {
+DIRECTIVE_PRAGMA: '#pragma' ~[\r\n]* {
 	LexTextSet(LexTextRight(-6));
 	LexTokenSetChannel(CHANNEL_TRIVIA);
 };
 
-DIRECTIVE_LINE := '#line' ~[\r\n]* {
+DIRECTIVE_LINE: '#line' ~[\r\n]* {
+	LexTextSet(LexTextRight(-5));
+	LexTokenSetChannel(CHANNEL_TRIVIA);
+};
+
+DIRECTIVE_LINE: '#meta' ~[\r\n]* {
 	LexTextSet(LexTextRight(-5));
 	LexTokenSetChannel(CHANNEL_TRIVIA);
 };
@@ -367,7 +374,18 @@ BINARY_INTEGER: '0b' [01_]*[01];
  * todo: interpolated strings, 
  */
 STRING_C_LIKE: '"' ([\\]["] | ~["])* '"';
+
 STRING_VERBATIM: '@"' ( '""' | [^"] | [\r\n])* '"';
+
+START_FORMAT_STRING: '$"' {
+	LexModePush(MODE_STRING_FORMAT);
+	LexEnterMLComment();
+};
+
+START_FORMAT_VERBATIM: '$@"' {
+	LexModePush(MODE_STRING_FORMAT_VERBATIM);
+	LexEnterMLComment();
+};
 
 WHITESPACE: [ \t\r\n]+ {
 	LexTokenSetChannel(CHANNEL_TRIVIA);
@@ -455,3 +473,52 @@ CONTENT_VERBATIM_BLOCK: . {
 END_VERBATIM_BLOCK: '#>' {
 	LexConsolidateMLComment(VERBATIM_BLOCK, CHANNEL_DEFAULT, "verbatim", "#>");
 };
+
+/* == MODE 6: MODE_STRING_FORMAT == */
+mode MODE_STRING_FORMAT;
+
+ESCAPE_STRING_FORMAT: '{{' | '}}' | '""' 
+	| "\{" | "\}" | '\"'
+	;
+
+NESTED_START_STRING_FORMAT: '{' {
+	LexEnterMLComment();
+	LexAppendMLCommentText();
+};
+
+NESTED_END_STRING_FORMAT: '}' {
+	LexAppendMLCommentText();
+	LexLeaveMLComment();
+}
+
+CONTENT_END_STRING_FORMAT: . {
+	LexAppendMLCommentText();
+};
+
+END_STRING_FORMAT: '"' {
+	LexConsolidateMLComment(STRING_FORMAT, CHANNEL_DEFAULT, "format string", "\"");
+};
+
+/* == MODE 7: MODE_STRING_FORMAT_VERBATIM == */
+mode MODE_STRING_FORMAT_VERBATIM;
+
+ESCAPE_STRING_FORMAT_VERBATIM: '{{' | '}}' | '""';
+
+NESTED_START_STRING_FORMAT_VERBATIM: '{' {
+	LexEnterMLComment();
+	LexAppendMLCommentText();
+};
+
+NESTED_END_STRING_FORMAT_VERBATIM: '}' {
+	LexAppendMLCommentText();
+	LexLeaveMLComment();
+}
+
+CONTENT_END_STRING_FORMAT_VERBATIM: . {
+	LexAppendMLCommentText();
+};
+
+END_STRING_FORMAT_VERBATIM: '"' {
+	LexConsolidateMLComment(STRING_FORMAT_VERBATIM, CHANNEL_DEFAULT, "formated vertabim string", "\"");
+};
+

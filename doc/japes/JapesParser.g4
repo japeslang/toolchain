@@ -38,7 +38,7 @@ constant_expression: number | boolean | string_literal;
 number: integer | DECIMAL_REAL;
 integer: DECIMAL_INTEGER | HEX_INTEGER | BINARY_INTEGER | OCTAL_INTEGER;
 boolean: TRUE | FALSE;
-string_literal: STRING_C_LIKE | STRING_VERBATIM;
+string_literal: STRING_C_LIKE | STRING_VERBATIM | STRING_FORMAT | STRING_FORMAT_VERBATIM;
 
 visibility: PRIVATE INTERNAL? | INTERNAL | PROTECTED INTERNAL? | PUBLIC | PACKAGE;
 
