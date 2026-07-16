@@ -30,7 +30,7 @@ tu_element: namespace_declaration | namespace_definition | composite_definition;
 
 unqualified_identifier : ID | ID_AT;
 identifier: unqualified_identifier (DOT unqualified_identifier)*;
-basic_type: identifier generics_list? pointer_declaration?;
+basic_type: identifier (generics_list | template_list)? pointer_declaration?;
 type: type_qualifiers? basic_type;
 type_qualifiers: (CONST | CONSTEXPR | VOLATILE);
 pointer_declaration: STAR* array_declaration? nullability? reference_declaration?;
@@ -46,7 +46,7 @@ string_literal: STRING_C_LIKE | STRING_VERBATIM | STRING_FORMAT | STRING_FORMAT_
 
 visibility: PRIVATE INTERNAL? | NAMESPACE? INTERNAL | PROTECTED INTERNAL? | PUBLIC ;
 
-generics_list: GENERIC_BEGIN identifier (COMMA identifier)* RBRACKET;
+generics_list: GENERIC_BEGIN basic_type (COMMA basic_type)* RBRACKET;
 
 template_list: TEMPLATE_BEGIN (template_element (COMMA template_element)*)? RBRACKET;
 template_element: mkw_typename identifier | method_parameter | expression;
@@ -71,7 +71,7 @@ mkw_index: ID {LangTextIn(_localctx.Start, "index")}?;
 
 namespace_declaration: NAMESPACE identifier SEMICOLON;
 namespace_definition: NAMESPACE identifier LBRACE namespace_element* RBRACE;
-namespace_element: namespace_definition | composite_definition | using_pragma;
+namespace_element: namespace_definition | composite_definition | using_pragma SEMICOLON;
 
 /* -- Attributes -- */
 
@@ -88,6 +88,7 @@ class_inheritance: COLON identifier (COMMA identifier)*;
 class_constraints: mkw_where identifier COLON identifier | identifier LEADS_TO identifier;
 class_body: (method_declaration 
 	| constructor_definition | static_constructor_definition | destructor_definition
+	| field_definition | property_definition
 	)*;
 
 enum_definition: visibility? ENUM identifier LBRACE RBRACE SEMICOLON?;
@@ -103,7 +104,7 @@ field_definition: field_spec type variable_definition_clause
 	(COMMA variable_definition_clause)*;
 field_spec: attribute_invocation* visibility? STATIC?; 
 
-property_definition: field_spec method_spec type property_body;
+property_definition: field_spec method_spec type unqualified_identifier property_body;
 property_body: FAT_ARROW statement | property_block SEMICOLON?;
 property_block: LBRACE property_getter? property_setter* RBRACE;
 property_getter: visibility? mkw_get property_callback_body;
