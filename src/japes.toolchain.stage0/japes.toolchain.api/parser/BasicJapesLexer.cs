@@ -185,6 +185,12 @@ namespace japes.toolchain.parser {
 
         public const int MODE_COMMENT_MACRO = 4;
 
+        public const int MODE_VERBATIM_BLOCK = 5;
+
+        public const int MODE_STRING_FORMAT = 6;
+
+        public const int MODE_STRING_FORMAT_VERBATIM = 7;
+
         #endregion Mode
 
         #endregion Constants
